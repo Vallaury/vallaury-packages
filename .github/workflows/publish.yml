@@ -1,0 +1,95 @@
+name: Publish repositories
+
+# Rebuilds the signed apt and dnf repositories from the latest release of the app and publishes them.
+# Runs every day (and does nothing when the published version is already the latest) or by hand.
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Rebuild even if the published version is the latest"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  APP_REPO: sappafrancesco/vallaury-desktop
+  SITE: https://sappafrancesco.github.io/vallaury-packages
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    outputs:
+      build: ${{ steps.decide.outputs.build }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Decide whether there is something new
+        id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          latest=$(gh release view --repo "$APP_REPO" --json tagName -q .tagName)
+          published=$(curl -fsS "$SITE/version.txt" 2>/dev/null || true)
+          echo "latest=$latest published=$published"
+          echo "tag=$latest" >> "$GITHUB_OUTPUT"
+          if [ "$latest" != "$published" ] || [ "$FORCE" = "true" ]; then
+            echo "build=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "build=no" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Tools
+        if: steps.decide.outputs.build == 'yes'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq apt-utils createrepo-c rpm gnupg xz-utils
+
+      - name: Download the release packages and verify them
+        if: steps.decide.outputs.build == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.decide.outputs.tag }}
+        run: |
+          mkdir release
+          gh release download "$TAG" --repo "$APP_REPO" --dir release --pattern '*.deb' --pattern '*.rpm' --pattern SHA256SUMS
+          (cd release && grep -E '\.(deb|rpm)$' SHA256SUMS | sha256sum -c -)
+          test "$(ls release/*.deb | wc -l)" = 2
+          test "$(ls release/*.rpm | wc -l)" = 2
+
+      - name: Build and sign
+        if: steps.decide.outputs.build == 'yes'
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          TAG: ${{ steps.decide.outputs.tag }}
+        run: |
+          printf '%s' "$SIGNING_KEY" | gpg --batch --import
+          scripts/build-site.sh release site-out
+          echo "$TAG" > site-out/version.txt
+
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        if: steps.decide.outputs.build == 'yes'
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        if: steps.decide.outputs.build == 'yes'
+        with:
+          path: site-out
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.build == 'yes'
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

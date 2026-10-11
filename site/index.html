@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vallaury per Linux</title>
+<style>
+  body { font: 16px/1.6 system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; color: #1b1b1f; background: #fff; }
+  @media (prefers-color-scheme: dark) { body { color: #e6e6ea; background: #131316; } pre { background: #1e1e24; } }
+  pre { background: #f2f2f5; padding: 1rem; overflow-x: auto; border-radius: .5rem; }
+  h1 { margin-bottom: .2rem; } h2 { margin-top: 2rem; }
+</style>
+</head>
+<body>
+<h1>Vallaury per Linux</h1>
+<p>Repository ufficiali firmati per installare e aggiornare <a href="https://vallaury.it">Vallaury</a> con il gestore di pacchetti della tua distribuzione.</p>
+
+<h2>Ubuntu, Debian e derivate</h2>
+<pre>sudo install -d -m 0755 /etc/apt/keyrings
+curl -fsSL https://sappafrancesco.github.io/vallaury-packages/vallaury.gpg | sudo tee /etc/apt/keyrings/vallaury.gpg &gt; /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/vallaury.gpg] https://sappafrancesco.github.io/vallaury-packages/apt stable main" | sudo tee /etc/apt/sources.list.d/vallaury.list
+sudo apt update
+sudo apt install vallaury-desktop</pre>
+
+<h2>Fedora, RHEL e derivate</h2>
+<pre>sudo curl -fsSL -o /etc/yum.repos.d/vallaury.repo https://sappafrancesco.github.io/vallaury-packages/vallaury.repo
+sudo dnf install vallaury-desktop</pre>
+
+<h2>openSUSE</h2>
+<pre>sudo zypper addrepo https://sappafrancesco.github.io/vallaury-packages/vallaury.repo
+sudo zypper install vallaury-desktop</pre>
+
+<p>Architetture: x86_64 (amd64) e aarch64 (arm64). Chiave di firma: <a href="vallaury.asc">vallaury.asc</a>, impronta <code>E1B5 5711 9138 0C27 C8C9 8381 C9D6 EB50 B55A 78C5</code>.</p>
+<p>Codice sorgente dell'app: <a href="https://github.com/sappafrancesco/vallaury-desktop">sappafrancesco/vallaury-desktop</a> (GPL-3.0-only).</p>
+</body>
+</html>
