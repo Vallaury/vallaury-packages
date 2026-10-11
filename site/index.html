@@ -17,20 +17,20 @@
 
 <h2>Ubuntu, Debian e derivate</h2>
 <pre>sudo install -d -m 0755 /etc/apt/keyrings
-curl -fsSL https://sappafrancesco.github.io/vallaury-packages/vallaury.gpg | sudo tee /etc/apt/keyrings/vallaury.gpg &gt; /dev/null
-echo "deb [signed-by=/etc/apt/keyrings/vallaury.gpg] https://sappafrancesco.github.io/vallaury-packages/apt stable main" | sudo tee /etc/apt/sources.list.d/vallaury.list
+curl -fsSL https://vallaury.github.io/vallaury-packages/vallaury.gpg | sudo tee /etc/apt/keyrings/vallaury.gpg &gt; /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/vallaury.gpg] https://vallaury.github.io/vallaury-packages/apt stable main" | sudo tee /etc/apt/sources.list.d/vallaury.list
 sudo apt update
 sudo apt install vallaury-desktop</pre>
 
 <h2>Fedora, RHEL e derivate</h2>
-<pre>sudo curl -fsSL -o /etc/yum.repos.d/vallaury.repo https://sappafrancesco.github.io/vallaury-packages/vallaury.repo
+<pre>sudo curl -fsSL -o /etc/yum.repos.d/vallaury.repo https://vallaury.github.io/vallaury-packages/vallaury.repo
 sudo dnf install vallaury-desktop</pre>
 
 <h2>openSUSE</h2>
-<pre>sudo zypper addrepo https://sappafrancesco.github.io/vallaury-packages/vallaury.repo
+<pre>sudo zypper addrepo https://vallaury.github.io/vallaury-packages/vallaury.repo
 sudo zypper install vallaury-desktop</pre>
 
 <p>Architetture: x86_64 (amd64) e aarch64 (arm64). Chiave di firma: <a href="vallaury.asc">vallaury.asc</a>, impronta <code>E1B5 5711 9138 0C27 C8C9 8381 C9D6 EB50 B55A 78C5</code>.</p>
-<p>Codice sorgente dell'app: <a href="https://github.com/sappafrancesco/vallaury-desktop">sappafrancesco/vallaury-desktop</a> (GPL-3.0-only).</p>
+<p>Codice sorgente dell'app: <a href="https://github.com/Vallaury/vallaury-desktop">Vallaury/vallaury-desktop</a> (GPL-3.0-only).</p>
 </body>
 </html>

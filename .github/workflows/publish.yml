@@ -20,8 +20,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  APP_REPO: sappafrancesco/vallaury-desktop
-  SITE: https://sappafrancesco.github.io/vallaury-packages
+  APP_REPO: Vallaury/vallaury-desktop
+  SITE: https://vallaury.github.io/vallaury-packages
 
 jobs:
   build:

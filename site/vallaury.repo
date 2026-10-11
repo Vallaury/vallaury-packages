@@ -1,7 +1,7 @@
 [vallaury]
 name=Vallaury
-baseurl=https://sappafrancesco.github.io/vallaury-packages/rpm/$basearch
+baseurl=https://vallaury.github.io/vallaury-packages/rpm/$basearch
 enabled=1
 gpgcheck=1
 repo_gpgcheck=1
-gpgkey=https://sappafrancesco.github.io/vallaury-packages/vallaury.asc
+gpgkey=https://vallaury.github.io/vallaury-packages/vallaury.asc
