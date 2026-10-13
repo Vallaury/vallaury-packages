@@ -58,8 +58,9 @@ jobs:
           TAG: ${{ steps.decide.outputs.tag }}
         run: |
           mkdir release
-          gh release download "$TAG" --repo "$APP_REPO" --dir release --pattern '*.deb' --pattern '*.rpm' --pattern SHA256SUMS
-          (cd release && grep -E '\.(deb|rpm)$' SHA256SUMS | sha256sum -c -)
+          gh release download "$TAG" --repo "$APP_REPO" --dir release --pattern 'Vallaury-[0-9]*.deb' --pattern 'Vallaury-[0-9]*.rpm' --pattern SHA256SUMS
+          # Only the files with the version in the name: the release also carries copies without it, for stable links.
+          (cd release && grep -E 'Vallaury-[0-9][^ ]*\.(deb|rpm)$' SHA256SUMS | sha256sum -c -)
           test "$(ls release/*.deb | wc -l)" = 2
           test "$(ls release/*.rpm | wc -l)" = 2
 
